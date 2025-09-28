@@ -3,7 +3,7 @@ from flask import Flask, render_template
 import os
 from app import db
 from flask import jsonify
-
+import random
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -24,20 +24,39 @@ def create_app(test_config=None):
         pass
     db.init_app(app)
 
+
+    @app.route('/random_question', methods=['GET'])
+    def random_question():
+        data = db.get_db()
+        
+        # Get a random question ID
+        max_id = data.execute("SELECT MAX(id) FROM all_questions").fetchone()[0]
+        random_id = random.randint(1, max_id)
+        
+        question = data.execute(
+            "SELECT * FROM all_questions WHERE id = ?", (random_id,)
+        ).fetchone()
+        
+        if question:
+            # Assuming columns: id, title, answer_0, answer_1, answer_2, answer_3
+            result = {
+                "id": question[0],
+                "title": question[1],
+                "answer_0": question[2], 
+                "answer_1": question[3],
+                "answer_2": question[4],
+                "answer_3": question[5],
+                "correct_answer": question[6],
+                "category": question[7],
+                "image": question[8]
+            }
+            return jsonify(result)
+        else:
+            return jsonify({"error": "Question not found"}), 404
+
     @app.route('/', methods=['GET'])
     def index():
-        data = db.get_db()
-        test = data.execute(
-            "SELECT title, answer_0, answer_1 FROM all_questions WHERE id = ?", (434,)
-        ).fetchall()
-        if test:
-            # Convert row to dictionary with column names
-            result = {
-                "title": test[0][0],
-                "answer_0": test[0][1], 
-                "answer_1": test[0][2]
-            }
-        return jsonify(result)
+        return jsonify("hi")
 
     return app
 
