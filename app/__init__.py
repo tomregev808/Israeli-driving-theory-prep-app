@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask, render_template
 import os
 from app import db
+from flask import jsonify
 
 
 def create_app(test_config=None):
@@ -23,12 +24,20 @@ def create_app(test_config=None):
         pass
     db.init_app(app)
 
-
-    @app.route('/', methods=['get'])
-    def index ():
-        return render_template('base.html')
-    
-
+    @app.route('/', methods=['GET'])
+    def index():
+        data = db.get_db()
+        test = data.execute(
+            "SELECT title, answer_0, answer_1 FROM all_questions WHERE id = ?", (434,)
+        ).fetchall()
+        if test:
+            # Convert row to dictionary with column names
+            result = {
+                "title": test[0][0],
+                "answer_0": test[0][1], 
+                "answer_1": test[0][2]
+            }
+        return jsonify(result)
 
     return app
 
