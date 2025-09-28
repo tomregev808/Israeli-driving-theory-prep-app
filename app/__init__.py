@@ -23,9 +23,6 @@ def create_app(test_config=None):
         pass
     db.init_app(app)
 
-    from . import auth
-    app.register_blueprint(auth.bp)
-
 
     @app.route('/', methods=['get'])
     def index ():
