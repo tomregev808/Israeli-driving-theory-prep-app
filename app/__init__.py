@@ -25,7 +25,7 @@ def create_app(test_config=None):
     db.init_app(app)
 
 
-    @app.route('/random_question', methods=['GET'])
+    @app.route('/random_question', methods=['GET', 'POST'])
     def random_question():
         data = db.get_db()
         
@@ -39,7 +39,7 @@ def create_app(test_config=None):
         
         if question:
             # Assuming columns: id, title, answer_0, answer_1, answer_2, answer_3
-            result = {
+            q = {
                 "id": question[0],
                 "title": question[1],
                 "answer_0": question[2], 
@@ -50,7 +50,7 @@ def create_app(test_config=None):
                 "category": question[7],
                 "image": question[8]
             }
-            return jsonify(result)
+            return render_template("question.html", question=q)
         else:
             return jsonify({"error": "Question not found"}), 404
 
@@ -58,6 +58,10 @@ def create_app(test_config=None):
     def index():
         return jsonify("hi")
 
+
+    @app.route('/check', methods=['GET', 'POST'])
+    def check_answer():
+        return jsonify("hi")
     return app
 
 

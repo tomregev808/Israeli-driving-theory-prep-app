@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>שאלה אקראית</title>
+ <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="question-box">
+        <form method="POST" action="{{ url_for('check_answer') }}">
+            <h2>{{ question.title }}</h2>
+
+            {% if question.image %}
+                <img src="{{ question.image }}" alt="תמונה לשאלה">
+            {% endif %}
+
+            <div class="answers">
+                {% for i in range(4) %}
+                    <label>
+                        <input type="radio" name="answer" value="{{ i }}" required>
+                        {{ question['answer_' ~ i] }}
+                    </label>
+                {% endfor %}
+            </div>
+
+            <input type="hidden" name="question_id" value="{{ question.id }}">
+            <button type="submit">שלח תשובה</button>
+        </form>
+    </div>
+</body>
+</html>
