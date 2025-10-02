@@ -1,9 +1,11 @@
 import sqlite3
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import os
 from app import db
 from flask import jsonify
 import random
+
+
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -57,11 +59,29 @@ def create_app(test_config=None):
     @app.route('/', methods=['GET'])
     def index():
         return jsonify("hi")
+    
+
 
 
     @app.route('/check', methods=['GET', 'POST'])
     def check_answer():
-        return jsonify("hi")
+        if request.method == 'POST':
+            data = db.get_db()
+            id = request.form.get('question_id')
+            user_answer = int (request.form.get('answer'))
+            correct_answer = data.execute(
+            "SELECT correct_answer FROM all_questions WHERE id = ?", (id,)
+        ).fetchone()
+            if user_answer == correct_answer[0]:
+                message = f"user answered question {id} with answer {user_answer}. he was correct"
+            else:
+                message = f"user answered question {id} with answer {user_answer}. he was wrong. the correct one was {correct_answer[0]}"
+
+
+            
+
+ 
+            return jsonify(message)
     return app
 
 
