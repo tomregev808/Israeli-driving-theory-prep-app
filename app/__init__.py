@@ -75,21 +75,35 @@ def create_app(test_config=None):
         if user_answer not in range (0, 3) or user_answer is not int:
             message = f'bad answer'
             
+        question = data.execute(
+            "SELECT * FROM all_questions WHERE id = ?", (id,)
+        ).fetchone()
 
+        if question:
+            # Assuming columns: id, title, answer_0, answer_1, answer_2, answer_3
+            q = {
+                "id": question[0],
+                "title": question[1],
+                "answer_0": question[2], 
+                "answer_1": question[3],
+                "answer_2": question[4],
+                "answer_3": question[5],
+                "correct_answer": question[6],
+                "category": question[7],
+                "image": question[8]
+            }
 
         correct_answer = data.execute(
             "SELECT correct_answer FROM all_questions WHERE id = ?", (id,)
         ).fetchone()
-        if user_answer == correct_answer[0]:
-            message = f"user answered question {id} with answer {user_answer}. he was correct"
+        if user_answer == q ['correct_answer']:
+            correct = True
         else:
-            message = f"user answered question {id} with answer {user_answer}. he was wrong. the correct one was {correct_answer[0]}"
-
-
+            correct = False
             
-
- 
-        return jsonify(message)
+            
+            
+        return render_template("check_question.html", question=q, correct = correct)
     return app
 
 
