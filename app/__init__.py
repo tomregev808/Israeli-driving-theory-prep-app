@@ -25,7 +25,14 @@ def create_app(test_config=None):
         pass
     db.init_app(app)
 
+
+
     app.register_blueprint (frontend.bp)
+
+    @app.route('/', methods=['GET'])
+        return render_template("idnex.html")
+
+
     return app
 
 
