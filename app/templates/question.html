@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="question-box">
-        <form method="POST" action="{{ url_for('check_answer') }}">
+    <form method="POST" action="{{ url_for('frontend.check') }}">
             <h2>{{ question.title }}</h2>
 
             {% if question.image %}
