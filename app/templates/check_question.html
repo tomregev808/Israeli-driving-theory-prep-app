@@ -9,15 +9,6 @@
     <div class="question-box">
 
 
-            {% if correct == True %}
-                <h1>צדקת!</h1>
-            {% endif %}
-
-            {% if correct == False %}
-                <h1>טעית!</h1>
-            {% endif %}
-
-
 
         <form method="POST" action="{{ url_for('check_answer') }}">
             <h2>{{ question.title }}</h2>
@@ -39,5 +30,17 @@
             <button type="submit">שלח תשובה</button>
         </form>
     </div>
+    <hr>
+            {% if correct == True %}
+                <h1>צדקת!</h1>
+                <a href = '/frontend/random_question'> שאלה חדשה</a>
+            {% endif %}
+
+            {% if correct == False %}
+                <h1>טעית!</h1>
+            {% endif %}
+
+
+
 </body>
 </html>

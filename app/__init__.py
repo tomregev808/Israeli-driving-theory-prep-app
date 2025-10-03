@@ -1,10 +1,9 @@
-import sqlite3
 from flask import Flask, render_template, request
 import os
 from app import db
 from flask import jsonify
 import random
-
+from app import frontend
 
 
 def create_app(test_config=None):
@@ -26,84 +25,7 @@ def create_app(test_config=None):
         pass
     db.init_app(app)
 
-
-    @app.route('/random_question', methods=['GET', 'POST'])
-    def random_question():
-        data = db.get_db()
-        
-        # Get a random question ID
-        max_id = data.execute("SELECT MAX(id) FROM all_questions").fetchone()[0]
-        random_id = random.randint(1, max_id)
-        
-        question = data.execute(
-            "SELECT * FROM all_questions WHERE id = ?", (random_id,)
-        ).fetchone()
-        
-        if question:
-            # Assuming columns: id, title, answer_0, answer_1, answer_2, answer_3
-            q = {
-                "id": question[0],
-                "title": question[1],
-                "answer_0": question[2], 
-                "answer_1": question[3],
-                "answer_2": question[4],
-                "answer_3": question[5],
-                "correct_answer": question[6],
-                "category": question[7],
-                "image": question[8]
-            }
-            return render_template("question.html", question=q)
-        else:
-            return jsonify({"error": "Question not found"}), 404
-
-    @app.route('/', methods=['GET'])
-    def index():
-        return jsonify("hi")
-    
-
-
-
-    @app.route('/check', methods=['GET', 'POST'])
-    def check_answer():
-        data = db.get_db()
-        id = request.form.get('question_id')
-        user_answer = int (request.form.get('answer'))
-
-        if id not in range (0,1805) or id is not int:
-            message = f"bad id"
-
-        if user_answer not in range (0, 3) or user_answer is not int:
-            message = f'bad answer'
-            
-        question = data.execute(
-            "SELECT * FROM all_questions WHERE id = ?", (id,)
-        ).fetchone()
-
-        if question:
-            # Assuming columns: id, title, answer_0, answer_1, answer_2, answer_3
-            q = {
-                "id": question[0],
-                "title": question[1],
-                "answer_0": question[2], 
-                "answer_1": question[3],
-                "answer_2": question[4],
-                "answer_3": question[5],
-                "correct_answer": question[6],
-                "category": question[7],
-                "image": question[8]
-            }
-
-        correct_answer = data.execute(
-            "SELECT correct_answer FROM all_questions WHERE id = ?", (id,)
-        ).fetchone()
-        if user_answer == q ['correct_answer']:
-            correct = True
-        else:
-            correct = False
-            
-            
-            
-        return render_template("check_question.html", question=q, correct = correct)
+    app.register_blueprint (frontend.bp)
     return app
 
 
