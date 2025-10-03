@@ -4,8 +4,29 @@
     <meta charset="UTF-8">
     <title>שאלה אקראית</title>
  <link rel="stylesheet" href="styles.css">
+     <script>
+        function updateFailedQuestions(questionId, isCorrect) {
+            // Load existing failed questions
+            let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
+
+            if (!isCorrect) {
+                // Add if not already there
+                if (!failed.includes(questionId)) {
+                    failed.push(questionId);
+                }
+            } else {
+                // Remove if previously failed
+                failed = failed.filter(id => id !== questionId);
+            }
+
+            // Save back
+            localStorage.setItem("failed_questions", JSON.stringify(failed));
+            console.log("Updated failed questions:", failed);
+        }
+    </script>
+
 </head>
-<body>
+<body onload="updateFailedQuestions({{ question.id }}, {{ 'true' if correct == True else 'false' }})">>
     <div class="question-box">
 
 
@@ -33,11 +54,13 @@
     <hr>
             {% if correct == True %}
                 <h1>צדקת!</h1>
-                <a href = '/frontend/random_question'> שאלה חדשה</a>
+                <a href = {{ url_for('frontend.question') }}> שאלה חדשה</a>
             {% endif %}
 
             {% if correct == False %}
                 <h1>טעית!</h1>
+                <a href = {{ url_for('frontend.question') }}> שאלה אחרת</a>
+
             {% endif %}
 
 

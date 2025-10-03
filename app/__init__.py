@@ -30,10 +30,12 @@ def create_app(test_config=None):
     app.register_blueprint (frontend.bp)
 
     @app.route('/', methods=['GET'])
-        return render_template("idnex.html")
-
-
+    def index ():
+        return render_template("index.html")
+    
     return app
+
+
 
 
 
