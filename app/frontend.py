@@ -28,4 +28,7 @@ def check():
     return render_template ('check_question.html', question = q, correct = correct)
 
 
+@bp.route("/review_failed")
+def review_failed():
+    return render_template("review_failed.html")
 

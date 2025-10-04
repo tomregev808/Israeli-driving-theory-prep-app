@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>שאלות שנכשלת בהן</title>
+    <style>
+        body { font-family: Arial, sans-serif; direction: rtl; text-align: right; margin: 2em; }
+        .question-box { border: 1px solid #ccc; border-radius: 8px; padding: 1em; margin-bottom: 2em; max-width: 600px; }
+        img { max-width: 100%; margin-top: 1em; }
+    </style>
+</head>
+<body>
+    <h1>שאלות שנכשלת בהן</h1>
+    <div id="questions"></div>
+
+    <script>
+        async function loadFailedQuestions() {
+            let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
+            if (failed.length === 0) {
+                document.getElementById("questions").innerHTML = "<p>אין שאלות כושלות כרגע 🎉</p>";
+                return;
+            }
+
+            // Fetch from API
+            let response = await fetch("/api/get_questions?ids=" + failed.join(","));
+            let questions = await response.json();
+
+            let container = document.getElementById("questions");
+            container.innerHTML = "";
+
+            questions.forEach(q => {
+                let box = document.createElement("div");
+                box.className = "question-box";
+
+                box.innerHTML = `
+                    <h2>${q.title}</h2>
+                    ${q.image ? `<img src="/static/images/${q.image}" alt="תמונה לשאלה">` : ""}
+                    <form method="POST" action="{{ url_for('frontend.check') }}">
+                        ${[0,1,2,3].map(i => `
+                            <label>
+                                <input type="radio" name="answer" value="${i}" required>
+                                ${q["answer_" + i]}
+                            </label>
+                        `).join("")}
+                        <input type="hidden" name="question_id" value="${q.id}">
+                        <button type="submit">שלח תשובה</button>
+                    </form>
+                `;
+
+                container.appendChild(box);
+            });
+        }
+
+        loadFailedQuestions();
+    </script>
+</body>
+</html>

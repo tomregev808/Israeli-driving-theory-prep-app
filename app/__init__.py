@@ -1,9 +1,7 @@
 from flask import Flask, render_template, request
 import os
 from app import db
-from flask import jsonify
-import random
-from app import frontend
+from app import frontend, api
 
 
 def create_app(test_config=None):
@@ -28,6 +26,8 @@ def create_app(test_config=None):
 
 
     app.register_blueprint (frontend.bp)
+    app.register_blueprint (api.bp)
+
 
     @app.route('/', methods=['GET'])
     def index ():
