@@ -22,6 +22,12 @@
             // Save back
             localStorage.setItem("failed_questions", JSON.stringify(failed));
             console.log("Updated failed questions:", failed);
+            fetch("/export_deck", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids: failed })
+    })
+
         }
     </script>
 

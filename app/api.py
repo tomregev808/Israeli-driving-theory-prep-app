@@ -5,7 +5,7 @@ from app.shared import get_question_by_id
 bp = Blueprint('api', __name__, url_prefix='/api')
 
 @bp.route("/get_questions")
-def get_failed_questions():
+def get_questions():
     ids = request.args.get("ids")  # e.g. "12,34,56"
     results = []
 
