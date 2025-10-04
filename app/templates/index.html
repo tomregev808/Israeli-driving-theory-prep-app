@@ -10,10 +10,45 @@
     <ul>
         <li>
             <a href = {{ url_for('frontend.question') }}> תרגל שאלות חדשות</a>
+
         </li>
         <li>
-            
+                        <a href = {{ url_for('frontend.review_failed') }}> תרגל שאלות חדשות</a>
+
         </li>
+    <button onclick="exportDeck()">ייצא שאלות ל-Anki</button>
+
+    <script>
+    async function exportDeck() {
+        // Get failed question IDs from localStorage
+        let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
+        if (failed.length === 0) {
+            alert("אין שאלות לייצוא");
+            return;
+        }
+
+        // Send them to Flask
+        let response = await fetch("/export_deck", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: failed })
+        });
+
+        if (!response.ok) {
+            alert("בעיה ביצוא החפיסה");
+            return;
+        }
+
+        // Download the .apkg file
+        let blob = await response.blob();
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = "failed_questions.apkg";
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+    </script>
 
     </ul>
 </body>

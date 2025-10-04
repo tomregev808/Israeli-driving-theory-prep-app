@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import os
 from app import db
-from app import frontend, api
+from app import frontend, api, export_deck
 
 
 def create_app(test_config=None):
@@ -27,6 +27,8 @@ def create_app(test_config=None):
 
     app.register_blueprint (frontend.bp)
     app.register_blueprint (api.bp)
+    app.register_blueprint (export_deck.bp)
+
 
 
     @app.route('/', methods=['GET'])
