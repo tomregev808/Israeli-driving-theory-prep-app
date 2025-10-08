@@ -1,14 +1,19 @@
 from bs4 import BeautifulSoup
 import csv
 from app.config import paths
+import re
+
 class question:
-    def __init__(self, title, answers, correct_answer, category, id, image=None):
+
+    def __init__(self, title, answers, correct_answer, category, id, types, image=None):
         self.title = title
         self.answers = answers
         self.correct_answer = correct_answer
         self.category = category
         self.id = id
         self.image = image
+        self.types = types
+
 
 
 
@@ -53,11 +58,12 @@ class questionmaker:
         answers = readtext["answers"]
         correct_answer = readtext["correct_answer"] 
         category = row["category"]
+        types = readtext ["types"]
         if "image" in readtext: 
             image = readtext["image"]
-            return question(title, answers, correct_answer, category, id, image)
+            return question(title, answers, correct_answer, category, id, types, image)
 
-        return question(title, answers, correct_answer, category, id)
+        return question(title, answers, correct_answer, category, id, types)
 
      def makeList(self):
         questions = []
@@ -91,17 +97,29 @@ class questionmaker:
         
         if len (answers) != 4:
             raise ValueError(f"There are no 4 answers")
+        
+        type_span = soup.find('span', style=lambda s: s and 'float: left' in s)
+        if not type_span:
+            raise ValueError(f"Missing question types")
+        
+        text = type_span.get_text(strip=True)
+        types = re.findall(r'«(.*?)»', text)
+
+
+
 
 
         if soup.img:
             image = soup.img ["src"]
             return {"answers":answers, 
         "correct_answer":correct_answer,
-        "image": image
+        "image": image,
+        "types": types
         }
         else:
              return {"answers":answers, 
-        "correct_answer":correct_answer}
+        "correct_answer":correct_answer,
+        "types": types}
                          
 
 

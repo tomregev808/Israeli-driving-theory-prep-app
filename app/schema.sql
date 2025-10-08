@@ -16,22 +16,9 @@ CREATE TABLE all_questions (
     image TEXT
 );
 
-
-CREATE TABLE user (
-    user_id INTEGER PRIMARY KEY,
-    username TEXT NOT NULL,
-    password TEXT NOT NULL
+CREATE TABLE question_types (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    question_id INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    FOREIGN KEY (question_id) REFERENCES questions(id)
 );
-
-
-CREATE TABLE question_log (
-    log_id INTEGER PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    question_id INTEGER NOT NULL, 
-    date_answered TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    number_of_answers TIMESTAMP NOT NULL,
-    date_next_answer TIMESTAMP NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user (id),
-    FOREIGN KEY (question_id) REFERENCES all_quetions (id)
-);
-

@@ -47,6 +47,7 @@ def init_db():
 
 
 
+
 @click.command('init-db')
 def init_db_command():
     """Clear the existing data and create new tables."""
@@ -61,6 +62,12 @@ def fillRow (question):
                         'correct_answer, category, image)'
                         'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (question.id, question.title, question.answers [0], question.answers [1], question.answers [2], question.answers [3], 
                         question.correct_answer, question.category, question.image))
+    
+    for t in question.types:
+        db.execute(
+            'INSERT INTO question_types (question_id, type) VALUES (?, ?)',
+            (question.id, t)
+        )
     db.commit()
 
 def fillTable (list): 
