@@ -10,6 +10,10 @@ def get_question_by_id(id):
     question = data.execute(
         "SELECT * FROM all_questions WHERE id = ?", (id,)
     ).fetchone()
+    db_types_rows = data.execute(
+                    "SELECT type FROM question_types WHERE question_id = ?", (id,)
+                ).fetchall()
+    db_types = [row["type"] for row in db_types_rows]
     if question:
         return {
             "id": question[0],
@@ -20,7 +24,8 @@ def get_question_by_id(id):
             "answer_3": question[5],
             "correct_answer": question[6],
             "category": question[7],
-            "image": question[8]
+            "image": question[8],
+            "types": db_types
         }
  
 

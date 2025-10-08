@@ -1,6 +1,5 @@
-DROP TABLE IF EXISTS all_quetions;
-DROP TABLE IF EXISTS quetion_log;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS all_questions;
+DROP TABLE IF EXISTS question_types;
 
 
 

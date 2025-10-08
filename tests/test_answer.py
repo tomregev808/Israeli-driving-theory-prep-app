@@ -126,6 +126,32 @@ def test_types(app):
                 )
 
 
+def test_wrong(client):
+    tablepath = config.paths ['test_table']
+    maker = questionmaker(None)
+    with open(tablepath, 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+
+        for i, row in enumerate (reader, start=2):
+            title_dict = maker.splitTitle (row["title2"])
+            id = title_dict['id']
+            readtext = maker.readHTML(row["description4"])
+            correct_answer = int(readtext["correct_answer"])
+
+            if correct_answer in range (0,3):
+
+                response = client.post('/frontend/check_answer', data={
+                    'question_id': id,
+                    'answer': correct_answer + 1,
+                })
+
+            elif correct_answer == 3:
+                    response = client.post('/frontend/check_answer', data={
+                    'question_id': id,
+                    'answer': 2,
+                })
+                    
+    
 
 
 
