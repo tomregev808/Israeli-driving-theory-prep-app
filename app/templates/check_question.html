@@ -37,7 +37,7 @@
 
 
 
-    <form method="POST" action="{{ url_for('frontend.check') }}">
+<form method="POST" action="{{ url_for('frontend.check') }}{% if review_mode %}?review=1{% endif %}">
             <h2>{{ question.title }}</h2>
 
             {% if question.image %}
