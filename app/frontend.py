@@ -34,7 +34,6 @@ def check():
 
 @bp.route("/review_failed")
 def review_failed():
-    pri
     return render_template("review_failed.html")
 
 
