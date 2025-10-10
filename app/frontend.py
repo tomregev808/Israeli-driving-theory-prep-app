@@ -24,11 +24,17 @@ def check():
         q = shared.get_question_by_id(id)
 
         correct = shared.check_answer (id, user_answer)
+        review_mode = request.args.get('review', '0') in ['1', 'true', 'True']
 
-    return render_template ('check_question.html', question = q, correct = correct)
+        
+
+
+    return render_template ('check_question.html', question = q, correct = correct, review_mode = review_mode)
 
 
 @bp.route("/review_failed")
 def review_failed():
+    pri
     return render_template("review_failed.html")
+
 

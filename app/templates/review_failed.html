@@ -31,7 +31,7 @@
                 box.innerHTML = `
                     <h2>${q.title}</h2>
                     ${q.image ? `<img src="${q.image}" alt="תמונה לשאלה">` : ""}
-                    <form method="POST" action="{{ url_for('frontend.check') }}">
+                    <form method="POST" action="{{ url_for('frontend.check', review=1) }}">
                         ${[0,1,2,3].map(i => `
                             <label>
                                 <input type="radio" name="answer" value="${i}" required>

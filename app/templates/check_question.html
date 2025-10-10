@@ -58,17 +58,21 @@
         </form>
     </div>
     <hr>
-            {% if correct == True %}
-                <h1>צדקת!</h1>
-                <a href = {{ url_for('frontend.question') }}> שאלה חדשה</a>
-            {% endif %}
-
-            {% if correct == False %}
-                <h1>טעית!</h1>
-                <a href = {{ url_for('frontend.question') }}> שאלה אחרת</a>
-
-            {% endif %}
-
+{% if review_mode %}
+    {% if correct %}
+        <h1>צדקת!</h1>
+    {% else %}
+        <h1>טעית!</h1>
+    {% endif %}
+    <a href="{{ url_for('frontend.review_failed') }}">שאלה אחרת</a>
+{% else %}
+    {% if correct %}
+        <h1>צדקת!</h1>
+    {% else %}
+        <h1>טעית!</h1>
+    {% endif %}
+    <a href="{{ url_for('frontend.question') }}">שאלה חדשה</a>
+{% endif %}
 
 
 </body>
