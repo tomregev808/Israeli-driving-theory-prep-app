@@ -30,7 +30,7 @@
 
                 box.innerHTML = `
                     <h2>${q.title}</h2>
-                    ${q.image ? `<img src="/static/images/${q.image}" alt="תמונה לשאלה">` : ""}
+                    ${q.image ? `<img src="${q.image}" alt="תמונה לשאלה">` : ""}
                     <form method="POST" action="{{ url_for('frontend.check') }}">
                         ${[0,1,2,3].map(i => `
                             <label>
