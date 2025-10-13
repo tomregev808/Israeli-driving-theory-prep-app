@@ -79,48 +79,50 @@ class questionmaker:
         return questions
 
 
-
      def readHTML(self, text):
-        soup = BeautifulSoup (text, 'html.parser')
-        
-        if soup.find_all("li") == []:
-           raise ValueError(f"answers not html formatted")
+        def normalize_letters(s):
+            replacements = {
+                '\u0410': 'A', '\u0412': 'B', '\u0415': 'E', '\u041a': 'K',
+                '\u041c': 'M', '\u041d': 'H', '\u041e': 'O', '\u0420': 'P',
+                '\u0421': 'C', '\u0422': 'T', '\u0425': 'X'
+            }
+            return ''.join(replacements.get(ch, ch) for ch in s)
+
+        soup = BeautifulSoup(text, 'html.parser')
+
+        if not soup.find_all("li"):
+            raise ValueError("answers not html formatted")
+
         answers = []
         correct_answer = None
-        for i, li in enumerate (soup.find_all("li")):
-            answers.append (li.getText(strip=True))
-            if li.find ("span", id = lambda x: x and x.startswith("correctAnswer")):
+        for i, li in enumerate(soup.find_all("li")):
+            answers.append(li.getText(strip=True))
+            if li.find("span", id=lambda x: x and x.startswith("correctAnswer")):
                 correct_answer = i
-                
+
         if correct_answer is None:
-            raise ValueError(f"Missing correct answer")
-        
-        if len (answers) != 4:
-            raise ValueError(f"There are no 4 answers")
-        
+            raise ValueError("Missing correct answer")
+        if len(answers) != 4:
+            raise ValueError("There are no 4 answers")
+
         type_span = soup.find('span', style=lambda s: s and 'float: left' in s)
         if not type_span:
-            raise ValueError(f"Missing question types")
-        
+            raise ValueError("Missing question types")
+
         text = type_span.get_text(strip=True)
         types = re.findall(r'«(.*?)»', text)
+        types = [normalize_letters(t.strip().upper()) for t in types]
 
-
-
-
-
-        if soup.img:
-            image = soup.img ["src"]
-            return {"answers":answers, 
-        "correct_answer":correct_answer,
-        "image": image,
-        "types": types
+        image = soup.img["src"] if soup.img else None
+        return {
+            "answers": answers,
+            "correct_answer": correct_answer,
+            "image": image,
+            "types": types
+        } if image else {
+            "answers": answers,
+            "correct_answer": correct_answer,
+            "types": types
         }
-        else:
-             return {"answers":answers, 
-        "correct_answer":correct_answer,
-        "types": types}
-                         
-
 
 
