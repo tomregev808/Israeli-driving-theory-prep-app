@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import os
 from app import db
 from app import frontend, api, export_deck
@@ -34,6 +34,9 @@ def create_app(test_config=None):
     @app.route('/', methods=['GET'])
     def index ():
         return render_template("index.html")
+    
+        
+
     
     return app
 

@@ -17,3 +17,18 @@ def get_questions():
     return jsonify(results)
 
     
+@bp.route('/get_type_questions', methods=['GET'])
+def get_type_questions ():
+        type = request.args.get("type") 
+        data = get_db()
+        db_types_rows = data.execute(
+                        "SELECT DISTINCT question_id FROM question_types WHERE type = ? COLLATE NOCASE;", (type,)  
+                    ).fetchall()
+        db_types = [row["question_id"] for row in db_types_rows]
+        results = []
+        for id in db_types:
+             results.append(get_question_by_id(id))
+             
+
+
+        return jsonify(results)
