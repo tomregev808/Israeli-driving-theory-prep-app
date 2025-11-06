@@ -9,12 +9,7 @@ bp = Blueprint('frontend', __name__, url_prefix='/frontend')
 
 @bp.route('/random_question', methods=['GET'])
 def question():
-    data = db.get_db()
-    max_id = data.execute("SELECT MAX(id) FROM all_questions").fetchone()[0]
-    random_id = random.randint(1, max_id)
-
-    q = shared.get_question_by_id(random_id)
-    return render_template("question.html", question=q)
+    return render_template("question.html", type="c1")
 
 @bp.route('/check_answer', methods=['GET','POST'])
 def check():
