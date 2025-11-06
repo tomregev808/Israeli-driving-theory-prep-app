@@ -20,6 +20,8 @@
             // Fetch from API
             let response = await fetch("/api/get_questions?ids=" + failed.join(","));
             let questions = await response.json();
+            questions = [questions[Math.floor(Math.random() * questions.length)]];
+
 
             let container = document.getElementById("questions");
             container.innerHTML = "";
