@@ -29,6 +29,27 @@
     })
 
         }
+    function removeQuestion(questionId) {
+        // Get current list
+        let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
+
+        // Remove this question ID
+        failed = failed.filter(id => id !== questionId);
+
+        // Save back to localStorage
+        localStorage.setItem("failed_questions", JSON.stringify(failed));
+
+        console.log("Removed question:", questionId);
+        console.log("Updated failed questions:", failed);
+
+        // (Optional) Send the updated list to your server
+        fetch("/export_deck", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: failed })
+        });
+    }
+
     </script>
 
 </head>
@@ -61,15 +82,22 @@
 {% if review_mode %}
     {% if correct %}
         <h1>צדקת!</h1>
-        <button onclick="updateFailedQuestions({{ question.id }}, false)">שמירת שאלה</button>
+<button onclick="removeQuestion({{ question.id }})">
+     הסרת שאלה ממאגר שאלות לתרגול
+</button>
+
     {% else %}
         <h1>טעית!</h1>
     {% endif %}
     <a href="{{ url_for('frontend.review_failed') }}">שאלה אחרת</a>
+    <button onclick="removeQuestion({{ question.id }})">
+     הסרת שאלה ממאגר שאלות לתרגול
+</button>
+
 {% else %}
     {% if correct %}
         <h1>צדקת!</h1>
-        <button onclick="updateFailedQuestions({{ question.id }}, false)">שמירת שאלה</button>
+        <button onclick="updateFailedQuestions({{ question.id }}, false)">שמירת שאלה למאגר שאלות לתרגול</button>
 
     {% else %}
         <h1>טעית!</h1>
