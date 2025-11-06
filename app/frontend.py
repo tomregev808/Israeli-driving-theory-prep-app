@@ -1,7 +1,5 @@
-from flask import Blueprint, render_template, request
-from app import shared, db
-import json
-import random
+from flask import Blueprint, render_template, request, redirect, url_for, make_response
+from app import shared
 
 
 bp = Blueprint('frontend', __name__, url_prefix='/frontend')
@@ -9,7 +7,11 @@ bp = Blueprint('frontend', __name__, url_prefix='/frontend')
 
 @bp.route('/random_question', methods=['GET'])
 def question():
-    return render_template("question.html", type="c1")
+    select_type = request.cookies.get("type")
+    if select_type is None:
+        return redirect(url_for('frontend.select_type'))
+    else:
+        return render_template("question.html", type=select_type)
 
 @bp.route('/check_answer', methods=['GET','POST'])
 def check():
@@ -32,3 +34,17 @@ def review_failed():
     return render_template("review_failed.html")
 
 
+
+@bp.route("/select_type")
+def select_type():
+    return render_template("select_type.html")
+
+
+@bp.route("/save_type", methods=['POST'])
+def save_type():
+    selected_type = request.form["question_type"]
+    resp = redirect(url_for('frontend.question'))
+    resp.set_cookie("type", selected_type, max_age=60*60*24*365, httponly=True,
+        secure=True,
+        samesite="Lax")  # 1 year)
+    return resp

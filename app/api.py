@@ -32,3 +32,15 @@ def get_type_questions ():
 
 
         return jsonify(results)
+    
+@bp.route('/get_distinct_type', methods=['GET'])
+def get_distinct_type ():
+        type = request.args.get("type") 
+        data = get_db()
+        db_types_rows = data.execute(
+                        "SELECT DISTINCT type FROM question_types"
+                    ).fetchall()
+        db_types = [row["type"] for row in db_types_rows]
+
+
+        return jsonify(db_types)
