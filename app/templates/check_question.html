@@ -38,7 +38,7 @@
 
 
 <form method="POST" action="{{ url_for('frontend.check') }}{% if review_mode %}?review=1{% endif %}">
-            <h2>{{ question.title }}</h2>
+            <h2>{{ question.id }}: {{ question.title }}</h2>
 
             {% if question.image %}
                 <img src="{{ question.image }}" alt="תמונה לשאלה">
