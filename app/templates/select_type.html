@@ -1,47 +1,22 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>בחירת סוג מבחן</title>
-</head>
-<body>
-    <h1>בחר סוג מבחן</h1>
+{% extends "base.html" %}
+{% block title %}בחירת סוג מבחן{% endblock %}
+{% block content %}
 
-    <form action="{{ url_for('frontend.save_type') }}" method="POST">
-
-        <label>
-            <input type="radio" name="question_type" value="D">
-            מבחן רכב ציבורי (D)
-        </label><br>
-
-        <label>
-            <input type="radio" name="question_type" value="C1">
-            מבחן רכב משא קל (C1)
-        </label><br>
-
-        <label>
-            <input type="radio" name="question_type" value="C">
-            מבחן רכב משא כבד (C)
-        </label><br>
-
-        <label>
-            <input type="radio" name="question_type" value="A">
-            מבחן אופנוע (A)
-        </label><br>
-
-        <label>
-            <input type="radio" name="question_type" value="1">
-            מבחן טרקטור (1)
-        </label><br>
-
-        <label>
-            <input type="radio" name="question_type" value="B">
-            מבחן רכב פרטי (B)
-        </label><br>
-
-<br>
-
-        <button type="submit">שמור</button>
+<section class="card">
+    <h2>בחר סוג מבחן</h2>
+    <form action="{{ url_for('frontend.save_type') }}" method="POST" class="type-form">
+        {% for value, label in [
+            ('D', 'מבחן רכב ציבורי (D)'),
+            ('C1', 'מבחן רכב משא קל (C1)'),
+            ('C', 'מבחן רכב משא כבד (C)'),
+            ('A', 'מבחן אופנוע (A)'),
+            ('1', 'מבחן טרקטור (1)'),
+            ('B', 'מבחן רכב פרטי (B)')
+        ] %}
+            <label><input type="radio" name="question_type" value="{{ value }}"> {{ label }}</label>
+        {% endfor %}
+        <button type="submit" class="btn primary">שמור</button>
     </form>
-</body>
-</html>
+</section>
+
+{% endblock %}

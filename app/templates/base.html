@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}רגב תיאוריה{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <header>
+    <a href="{{ url_for('index') }}" class="logo">🚗 רגב תיאוריה</a>
+        <nav>
+            <a href="{{ url_for('frontend.question') }}">תרגל שאלות חדשות</a>
+            <a href="{{ url_for('frontend.review_failed') }}">שאלות בהן טעית</a>
+            <a href="{{ url_for('frontend.select_type') }}">הגדרות</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <div id="message-box"></div>
+
+    <script>
+    function showMessage(text, type = "info") {
+        const box = document.getElementById("message-box");
+        box.textContent = text;
+        box.className = "show " + type;
+
+        // Hide after 3 seconds
+        setTimeout(() => {
+            box.className = box.className.replace("show", "").trim();
+        }, 3000);
+    }
+    </script>
+
+    <footer>
+        <p>© 2025 רגב תיאוריה — כל הזכויות שמורות</p>
+    </footer>
+</body>
+</html>

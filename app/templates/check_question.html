@@ -1,110 +1,83 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>שאלה אקראית</title>
- <link rel="stylesheet" href="styles.css">
-     <script>
-        function updateFailedQuestions(questionId, isCorrect) {
-            // Load existing failed questions
-            let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
+{% extends "base.html" %}
+{% block title %}בדיקת שאלה{% endblock %}
+{% block content %}
 
-            if (!isCorrect) {
-                // Add if not already there
-                if (!failed.includes(questionId)) {
-                    failed.push(questionId);
-                }
-            } else {
-                // Remove if previously failed
-                failed = failed.filter(id => id !== questionId);
-            }
+<section class="question-box" onload="updateFailedQuestions({{ question.id }}, {{ 'true' if correct == True else 'false' }})">
+    <h3>{{ question.id }}: {{ question.title }}</h3>
 
-            // Save back
-            localStorage.setItem("failed_questions", JSON.stringify(failed));
-            console.log("Updated failed questions:", failed);
-            fetch("/export_deck", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ids: failed })
-    })
+    {% if question.image %}
+        <img src="{{ question.image }}" alt="תמונה לשאלה">
+    {% endif %}
 
+    <form method="POST" action="{{ url_for('frontend.check') }}{% if review_mode %}?review=1{% endif %}">
+        {% for i in range(4) %}
+            <label class="answer">
+                <input type="radio" name="answer" value="{{ i }}" required>
+                {{ question['answer_' ~ i] }}
+            </label>
+        {% endfor %}
+        <input type="hidden" name="question_id" value="{{ question.id }}">
+        <button type="submit" class="btn primary">שלח תשובה</button>
+    </form>
+
+    <hr>
+    {% if review_mode %}
+        {% if correct %}
+            <h4 class="success">צדקת!</h4>
+            <button class="btn secondary" onclick="removeQuestion({{ question.id }})">הסר שאלה ממאגר</button>
+        {% else %}
+            <h4 class="error">טעית!</h4>
+        {% endif %}
+        <a href="{{ url_for('frontend.review_failed') }}" class="btn">שאלה אחרת</a>
+    {% else %}
+        {% if correct %}
+            <h4 class="success">צדקת!</h4>
+            <button class="btn secondary" onclick="updateFailedQuestions({{ question.id }}, false)">שמור שאלה למאגר</button>
+
+        {% else %}
+            <h4 class="error">טעית!</h4>
+            <button class="btn secondary" onclick="updateFailedQuestions({{ question.id }}, false)">שמור שאלה למאגר</button>
+        {% endif %}
+        <a href="{{ url_for('frontend.question') }}" class="btn">שאלה חדשה</a>
+    {% endif %}
+</section>
+
+<script>
+function updateFailedQuestions(questionId, isCorrect) {
+    let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
+
+    if (!isCorrect) {
+        if (!failed.includes(questionId)) {
+            failed.push(questionId);
+            showMessage("השאלה נשמרה למאגר לתרגול נוסף ✅", "success");
+        } else {
+            showMessage("השאלה כבר קיימת במאגר ❗", "info");
         }
-    function removeQuestion(questionId) {
-        // Get current list
-        let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
-
-        // Remove this question ID
+    } else {
         failed = failed.filter(id => id !== questionId);
-
-        // Save back to localStorage
-        localStorage.setItem("failed_questions", JSON.stringify(failed));
-
-        console.log("Removed question:", questionId);
-        console.log("Updated failed questions:", failed);
-
-        // (Optional) Send the updated list to your server
-        fetch("/export_deck", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ids: failed })
-        });
+        showMessage("השאלה הוסרה ממאגר השאלות הכושלות ✖️", "error");
     }
 
-    </script>
+    localStorage.setItem("failed_questions", JSON.stringify(failed));
+    fetch("/export_deck", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: failed })
+    });
+}
 
-</head>
-<body onload="updateFailedQuestions({{ question.id }}, {{ 'true' if correct == True else 'false' }})">
-    <div class="question-box">
+function removeQuestion(questionId) {
+    let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
+    failed = failed.filter(id => id !== questionId);
+    localStorage.setItem("failed_questions", JSON.stringify(failed));
+    showMessage("השאלה הוסרה ממאגר השאלות ❌", "info");
 
+    fetch("/export_deck", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: failed })
+    });
+}
+</script>
 
-
-<form method="POST" action="{{ url_for('frontend.check') }}{% if review_mode %}?review=1{% endif %}">
-            <h2>{{ question.id }}: {{ question.title }}</h2>
-
-            {% if question.image %}
-                <img src="{{ question.image }}" alt="תמונה לשאלה">
-            {% endif %}
-
-            <div class="answers">
-                {% for i in range(4) %}
-                    <label>
-                        <input type="radio" name="answer" value="{{ i }}" required>
-                        {{ question['answer_' ~ i] }}
-                    </label>
-                {% endfor %}
-            </div>
-
-            <input type="hidden" name="question_id" value="{{ question.id }}">
-            <button type="submit">שלח תשובה</button>
-        </form>
-    </div>
-    <hr>
-{% if review_mode %}
-    {% if correct %}
-        <h1>צדקת!</h1>
-<button onclick="removeQuestion({{ question.id }})">
-     הסרת שאלה ממאגר שאלות לתרגול
-</button>
-
-    {% else %}
-        <h1>טעית!</h1>
-    {% endif %}
-    <a href="{{ url_for('frontend.review_failed') }}">שאלה אחרת</a>
-    <button onclick="removeQuestion({{ question.id }})">
-     הסרת שאלה ממאגר שאלות לתרגול
-</button>
-
-{% else %}
-    {% if correct %}
-        <h1>צדקת!</h1>
-        <button onclick="updateFailedQuestions({{ question.id }}, false)">שמירת שאלה למאגר שאלות לתרגול</button>
-
-    {% else %}
-        <h1>טעית!</h1>
-    {% endif %}
-    <a href="{{ url_for('frontend.question') }}">שאלה חדשה</a>
-{% endif %}
-
-
-</body>
-</html>
+{% endblock %}

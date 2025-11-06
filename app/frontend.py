@@ -43,7 +43,7 @@ def select_type():
 @bp.route("/save_type", methods=['POST'])
 def save_type():
     selected_type = request.form["question_type"]
-    resp = redirect(url_for('frontend.question'))
+    resp = redirect(url_for('index'))
     resp.set_cookie("type", selected_type, max_age=60*60*24*365, httponly=True,
         secure=True,
         samesite="Lax")  # 1 year)

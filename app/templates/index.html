@@ -1,60 +1,44 @@
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>רגב תיאוריה</title>
- <link rel="stylesheet" href="styles.css">
+{% extends "base.html" %}
+{% block title %}רגב תיאוריה — בית{% endblock %}
+{% block content %}
 
-</head>
-<body>
-    <h1>רגב תיאוריה</h1>
-    <ul>
-        <li>
-            <a href = {{ url_for('frontend.question') }}> תרגל שאלות חדשות</a>
+<section class="home">
+    <h1>ברוך הבא לאפליקציית רגב תיאוריה</h1>
+    <p>הכן את עצמך למבחן התיאוריה שלך בצורה חכמה, נוחה ומהירה.</p>
 
-        </li>
-        <li>
-                        <a href = {{ url_for('frontend.review_failed') }}> חזור על שאלות בהן טעית</a>
+    <div class="actions">
+        <a href="{{ url_for('frontend.question') }}" class="btn primary">תרגל שאלות חדשות</a>
+        <a href="{{ url_for('frontend.review_failed') }}" class="btn secondary">חזור על שאלות שטעית בהן</a>
+        <a href="{{ url_for('frontend.select_type') }}" class="btn">בחר סוג מבחן</a>
+    </div>
 
-        </li>
-        <li>
-                        <a href = {{ url_for('frontend.select_type') }}> הגדרות</a>
+    <button class="btn export" onclick="exportDeck()">📦 ייצא שאלות ל-Anki</button>
+</section>
 
-        </li>
-
-    <button onclick="exportDeck()">ייצא שאלות ל-Anki</button>
-
-    <script>
-    async function exportDeck() {
-        // Get failed question IDs from localStorage
-        let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
-        if (failed.length === 0) {
-            alert("אין שאלות לייצוא");
-            return;
-        }
-
-        // Send them to Flask
-        let response = await fetch("/export_deck", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ids: failed })
-        });
-
-        if (!response.ok) {
-            alert("בעיה ביצוא החפיסה");
-            return;
-        }
-
-        // Download the .apkg file
-        let blob = await response.blob();
-        let url = URL.createObjectURL(blob);
-        let a = document.createElement("a");
-        a.href = url;
-        a.download = "failed_questions.apkg";
-        a.click();
-        URL.revokeObjectURL(url);
+<script>
+async function exportDeck() {
+    let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
+    if (failed.length === 0) {
+        alert("אין שאלות לייצוא");
+        return;
     }
-    </script>
+    let response = await fetch("/export_deck", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: failed })
+    });
+    if (!response.ok) {
+        alert("בעיה ביצוא החפיסה");
+        return;
+    }
+    let blob = await response.blob();
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "failed_questions.apkg";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+</script>
 
-    </ul>
-</body>
-</html>
+{% endblock %}

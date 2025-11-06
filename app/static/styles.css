@@ -1,0 +1,187 @@
+/* === GLOBAL RESET === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Assistant', 'Alef', sans-serif;
+  direction: rtl;
+}
+
+body {
+  background: #f5f7fb;
+  color: #222;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === HEADER === */
+header {
+  background: #2196f3;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: #fff;
+  transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+  opacity: 0.9;
+}
+
+nav a {
+  color: #fff;
+  margin: 0 0.5rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* === MAIN CONTENT === */
+main {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* === FOOTER === */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: #e3f2fd;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* === BUTTONS === */
+.btn {
+  display: inline-block;
+  margin: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  text-align: center;
+}
+
+.btn.primary {
+  background: #2196f3;
+  color: #fff;
+}
+
+.btn.secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn.export {
+  background: #ff9800;
+  color: #fff;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* === QUESTION BOX === */
+.question-box {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin: 1rem auto;
+  width: 100%;
+  max-width: 600px;
+  text-align: right;
+}
+
+.question-box img {
+  display: block;
+  max-width: 100%;
+  margin: 1rem 0;
+  border-radius: 6px;
+}
+
+.answer {
+  display: block;
+  margin: 0.5rem 0;
+}
+
+.success {
+  color: #2e7d32;
+}
+
+.error {
+  color: #c62828;
+}
+
+/* === HOME PAGE === */
+.home {
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+/* === RESPONSIVE === */
+@media (min-width: 600px) {
+  .actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  nav a {
+    margin: 0 1rem;
+  }
+}
+
+/* === MESSAGE BOX / TOAST === */
+#message-box {
+  position: fixed;
+  bottom: 20px;
+  right: 50%;
+  transform: translateX(50%);
+  background: #323232;
+  color: #fff;
+  padding: 0.8rem 1.2rem;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  font-size: 0.95rem;
+  transition: opacity 0.4s ease, bottom 0.4s ease;
+  z-index: 9999;
+  text-align: center;
+}
+
+#message-box.show {
+  opacity: 1;
+  bottom: 40px;
+}
+
+/* color variations */
+#message-box.success { background: #4caf50; }
+#message-box.error { background: #f44336; }
+#message-box.info { background: #2196f3; }

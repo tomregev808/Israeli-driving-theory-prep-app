@@ -1,58 +1,47 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>שאלות שנכשלת בהן</title>
- <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <h1>שאלות שנכשלת בהן</h1>
+{% extends "base.html" %}
+{% block title %}שאלות כושלות{% endblock %}
+{% block content %}
+
+<section>
+    <h2>שאלות בהן טעית</h2>
     <div id="questions"></div>
+</section>
 
-    <script>
-        async function loadFailedQuestions() {
-            let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
-            if (failed.length === 0) {
-                document.getElementById("questions").innerHTML = "<p>אין שאלות כושלות כרגע 🎉</p>";
-                return;
-            }
+<script>
+async function loadFailedQuestions() {
+    let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
+    if (failed.length === 0) {
+        document.getElementById("questions").innerHTML = "<p>אין שאלות כושלות כרגע 🎉</p>";
+        return;
+    }
 
-            // Fetch from API
-            let response = await fetch("/api/get_questions?ids=" + failed.join(","));
-            let questions = await response.json();
-            questions = [questions[Math.floor(Math.random() * questions.length)]]; 
+    let response = await fetch("/api/get_questions?ids=" + failed.join(","));
+    let questions = await response.json();
+    questions = [questions[Math.floor(Math.random() * questions.length)]];
 
+    let container = document.getElementById("questions");
+    container.innerHTML = "";
+    questions.forEach(q => {
+        let box = document.createElement("div");
+        box.className = "question-box";
+        box.innerHTML = `
+            <h3>${q.id}: ${q.title}</h3>
+            ${q.image ? `<img src="${q.image}" alt="תמונה לשאלה">` : ""}
+            <form method="POST" action="{{ url_for('frontend.check', review=1) }}">
+                ${[0,1,2,3].map(i => `
+                    <label class="answer">
+                        <input type="radio" name="answer" value="${i}" required>
+                        ${q["answer_" + i]}
+                    </label>
+                `).join("")}
+                <input type="hidden" name="question_id" value="${q.id}">
+                <button type="submit" class="btn primary">שלח תשובה</button>
+            </form>
+        `;
+        container.appendChild(box);
+    });
+}
+loadFailedQuestions();
+</script>
 
-            let container = document.getElementById("questions");
-            container.innerHTML = "";
-
-            questions.forEach(q => {
-                let box = document.createElement("div");
-                box.className = "question-box";
-
-                box.innerHTML = `
-                    <h2>${q.id}: ${q.title}</h2>
-                    ${q.image ? `<img src="${q.image}" alt="תמונה לשאלה">` : ""}
-                    <form method="POST" action="{{ url_for('frontend.check', review=1) }}">
-                        ${[0,1,2,3].map(i => `
-                            <label>
-                                <input type="radio" name="answer" value="${i}" required>
-                                ${q["answer_" + i]}
-                            </label>
-                        `).join("")}
-                        <input type="hidden" name="question_id" value="${q.id}">
-                        <button type="submit">שלח תשובה</button>
-                    </form>
-                `;
-
-                container.appendChild(box);
-            });
-        }
-
-        loadFailedQuestions();
-    </script>
-
-
-
-</body>
-</html>
+{% endblock %}
