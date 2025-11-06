@@ -32,7 +32,7 @@
     </script>
 
 </head>
-<body onload="updateFailedQuestions({{ question.id }}, {{ 'true' if correct == True else 'false' }})">>
+<body onload="updateFailedQuestions({{ question.id }}, {{ 'true' if correct == True else 'false' }})">
     <div class="question-box">
 
 
@@ -61,6 +61,7 @@
 {% if review_mode %}
     {% if correct %}
         <h1>צדקת!</h1>
+        <button onclick="updateFailedQuestions({{ question.id }}, false)">שמירת שאלה</button>
     {% else %}
         <h1>טעית!</h1>
     {% endif %}
@@ -68,6 +69,8 @@
 {% else %}
     {% if correct %}
         <h1>צדקת!</h1>
+        <button onclick="updateFailedQuestions({{ question.id }}, false)">שמירת שאלה</button>
+
     {% else %}
         <h1>טעית!</h1>
     {% endif %}
