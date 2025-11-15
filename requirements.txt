@@ -3,3 +3,4 @@ gunicorn
 click
 bs4
 genanki
+requests
