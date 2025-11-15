@@ -26,7 +26,7 @@ anki_model = genanki.Model(
         },
     ])
 
-@bp.route("/", methods=["POST"])
+@bp.route("/", methods=["POST"], strict_slashes=False)
 def anki_export():
     data = request.get_json()
     ids = data.get("ids", [])
