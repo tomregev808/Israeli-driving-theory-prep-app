@@ -15,13 +15,12 @@ def question():
 
 @bp.route('/check_answer', methods=['GET','POST'])
 def check():
-    if request.method == 'POST':
-        id = request.form.get('question_id')
-        user_answer = int (request.form.get('answer'))
-        q = shared.get_question_by_id(id)
+    id = request.form.get('question_id')
+    user_answer = int (request.form.get('answer'))
+    q = shared.get_question_by_id(id)
 
-        correct = shared.check_answer (id, user_answer)
-        review_mode = request.args.get('review', '0') in ['1', 'true', 'True']
+    correct = shared.check_answer (id, user_answer)
+    review_mode = request.args.get('review', '0') in ['1', 'true', 'True']
 
         
 
