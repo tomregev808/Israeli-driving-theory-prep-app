@@ -74,7 +74,7 @@ def download_one(url, outdir, timeout=20, user_agent=DEFAULT_USER_AGENT, verify_
     return {"ok": True, "filename": str(target), "size": size}
 
 def main():
-    print (filename_from_url ("https://www.gov.il/BlobFolder/generalpage/tq_pic_01/he/TQ_PIC_31802.jpg"))
+    download ()
 
 
 
@@ -83,17 +83,11 @@ def download ():
 
     with app.app_context():
         db = get_db()
-        maximum = db.execute(
-                "SELECT MAX(id) AS max_id FROM all_questions",
-            ).fetchone() 
+        rows = db.execute(
+            "SELECT id, image FROM all_questions WHERE image IS NOT NULL"
+        ).fetchall()
 
-        for i in range(maximum [0]):
-            row = db.execute(
-                "SELECT image FROM all_questions WHERE id = ?",
-                (i,)
-            ).fetchone()
-
-            if row:
+        for row in rows:
                 download_one (row["image"], 'download')
                 print(row["image"])
 
