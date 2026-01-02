@@ -3,8 +3,10 @@
 
 
 import genanki
-from flask import request, send_file, Blueprint
+from flask import request, send_file, Blueprint, current_app
 import requests
+import shutil
+
 from app.shared import get_question_by_id
 bp = Blueprint('export_deck', __name__, url_prefix='/export_deck')
 import os
@@ -41,14 +43,18 @@ def anki_export():
         question_html = f"<b>{q['title']}</b><br>"
         if q["image"]:
             # Download image locally
+            static_folder = current_app.static_folder
+            rel_path = q["image"].replace("/static/", "", 1)
+            src_path = os.path.join(static_folder, rel_path)
+
             img_filename = f"img_{qid}.jpg"
             img_path = os.path.join("/tmp", img_filename)
-            r = requests.get(q["image"])
-            with open(img_path, "wb") as f:
-                f.write(r.content)
+
+            shutil.copyfile(src_path, img_path)
+
             question_html += f'<img src="{img_filename}"><br>'
             media_files.append(img_path)
-
+            
         # Add answers
         question_html += "<ol>"
         for i in range(4):

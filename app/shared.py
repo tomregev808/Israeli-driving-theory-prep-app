@@ -1,33 +1,55 @@
-from flask import Blueprint, jsonify
 from app.db import get_db
-import json 
-bp = Blueprint('api', __name__, url_prefix='/api')
+from flask import url_for
+from urllib.parse import urlparse, unquote
+import os
 
 
+def filename_from_url(url, fallback="downloaded_file"):
+    parsed = urlparse(url)
+    path = unquote(parsed.path or "")
+    name = os.path.basename(path)
+    if name and "." in name:
+        return name
+    # fallback to hostname + simple suffix
+    host = parsed.netloc.replace(":", "_") or "host"
+    return f"{host}_{fallback}"
 
 def get_question_by_id(id):
-    data = get_db()
-    question = data.execute(
-        "SELECT * FROM all_questions WHERE id = ?", (id,)
+    db = get_db()
+
+    question = db.execute(
+        "SELECT * FROM all_questions WHERE id = ?",
+        (id,)
     ).fetchone()
-    db_types_rows = data.execute(
-                    "SELECT type FROM question_types WHERE question_id = ?", (id,)
-                ).fetchall()
+
+    if not question:
+        return None
+
+    db_types_rows = db.execute(
+        "SELECT type FROM question_types WHERE question_id = ?",
+        (id,)
+    ).fetchall()
+
     db_types = [row["type"] for row in db_types_rows]
-    if question:
-        return {
-            "id": question[0],
-            "title": question[1],
-            "answer_0": question[2],
-            "answer_1": question[3],
-            "answer_2": question[4],
-            "answer_3": question[5],
-            "correct_answer": question[6],
-            "category": question[7],
-            "image": question[8],
-            "types": db_types
-        }
- 
+
+    image_url = (
+        url_for("static", filename=f"images/{filename_from_url (question['image'])}")
+        if question["image"]
+        else None
+    )
+
+    return {
+        "id": question["id"],
+        "title": question["title"],
+        "answer_0": question["answer_0"],
+        "answer_1": question["answer_1"],
+        "answer_2": question["answer_2"],
+        "answer_3": question["answer_3"],
+        "correct_answer": question["correct_answer"],
+        "category": question["category"],
+        "image": image_url,
+        "types": db_types
+    }
 
 
 def check_answer (id, user_answer):
