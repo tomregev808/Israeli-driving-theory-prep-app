@@ -1,3 +1,28 @@
+:root {
+  --bg: #f5f7fb;
+  --text: #222;
+  --header-bg: #2196f3;
+  --header-text: #fff;
+  --card-bg: #fff;
+  --footer-bg: #e3f2fd;
+  --footer-text: #555;
+  --border-shadow: rgba(0,0,0,0.1);
+  --btn-secondary: #f0f0f0;
+}
+
+/* 🌙 Dark theme overrides */
+[data-theme="dark"] {
+  --bg: #121212;
+  --text: #eaeaea;
+  --header-bg: #1e1e1e;
+  --header-text: #ffffff;
+  --card-bg: #1c1c1c;
+  --footer-bg: #1a1a1a;
+  --footer-text: #aaa;
+  --border-shadow: rgba(0,0,0,0.6);
+  --btn-secondary: #2a2a2a;
+}
+
 /* === GLOBAL RESET === */
 * {
   box-sizing: border-box;
@@ -7,19 +32,21 @@
   direction: rtl;
 }
 
+
 body {
-  background: #f5f7fb;
-  color: #222;
+  background: var(--bg);
+  color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* === HEADER === */
 header {
-  background: #2196f3;
-  color: #fff;
+  background: var(--header-bg);
+  color: var(--header-text);
   padding: 0.8rem 1.5rem;
   display: flex;
   flex-wrap: wrap;
@@ -31,7 +58,7 @@ header {
   font-weight: bold;
   font-size: 1.5rem;
   text-decoration: none;
-  color: #fff;
+  color: var(--header-text);
   transition: opacity 0.2s ease;
 }
 
@@ -40,10 +67,18 @@ header {
 }
 
 nav a {
-  color: #fff;
+  color: var(--header-text);
   margin: 0 0.5rem;
   text-decoration: none;
   font-weight: 500;
+}
+.theme-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+  color: var(--header-text);
 }
 
 nav a:hover {
@@ -59,12 +94,11 @@ main {
   align-items: center;
 }
 
-/* === FOOTER === */
 footer {
   text-align: center;
   padding: 1rem;
-  background: #e3f2fd;
-  color: #555;
+  background: var(--footer-bg);
+  color: var(--footer-text);
   font-size: 0.9rem;
 }
 
@@ -88,8 +122,8 @@ footer {
 }
 
 .btn.secondary {
-  background: #f0f0f0;
-  color: #333;
+  background: var(--btn-secondary);
+  color: var(--text);
 }
 
 .btn.export {
@@ -104,10 +138,10 @@ footer {
 
 /* === QUESTION BOX === */
 .question-box {
-  background: #fff;
+  background: var(--card-bg);
   padding: 1rem;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px var(--border-shadow);
   margin: 1rem auto;
   width: 100%;
   max-width: 600px;
@@ -170,10 +204,8 @@ footer {
   border-radius: 6px;
   opacity: 0;
   pointer-events: none;
-  font-size: 0.95rem;
   transition: opacity 0.4s ease, bottom 0.4s ease;
   z-index: 9999;
-  text-align: center;
 }
 
 #message-box.show {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}רגב תיאוריה{% endblock %}</title>
@@ -7,35 +7,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <header>
+<header>
     <a href="{{ url_for('index') }}" class="logo">🚗 רגב תיאוריה</a>
-        <nav>
-            <a href="{{ url_for('frontend.question') }}">תרגל שאלות חדשות</a>
-            <a href="{{ url_for('frontend.review_failed') }}">שאלות בהן טעית</a>
-            <a href="{{ url_for('frontend.select_type') }}">הגדרות</a>
-        </nav>
-    </header>
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
-    <div id="message-box"></div>
+    <nav>
+        <a href="{{ url_for('frontend.question') }}">תרגל שאלות חדשות</a>
+        <a href="{{ url_for('frontend.review_failed') }}">שאלות בהן טעית</a>
+        <a href="{{ url_for('frontend.select_type') }}">הגדרות</a>
 
-    <script>
-    function showMessage(text, type = "info") {
-        const box = document.getElementById("message-box");
-        box.textContent = text;
-        box.className = "show " + type;
+        <!-- 🌙 Dark mode toggle -->
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+            🌙
+        </button>
+    </nav>
+</header>
 
-        // Hide after 3 seconds
-        setTimeout(() => {
-            box.className = box.className.replace("show", "").trim();
-        }, 3000);
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<div id="message-box"></div>
+
+<footer>
+    <p>© 2025 רגב תיאוריה — כל הזכויות שמורות</p>
+</footer>
+
+<script>
+/* ===== DARK MODE LOGIC ===== */
+(function () {
+    const root = document.documentElement;
+    const toggleBtn = document.getElementById("theme-toggle");
+
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+        root.setAttribute("data-theme", savedTheme);
+        toggleBtn.textContent = savedTheme === "dark" ? "☀️" : "🌙";
     }
-    </script>
 
-    <footer>
-        <p>© 2025 רגב תיאוריה — כל הזכויות שמורות</p>
-    </footer>
+    toggleBtn.addEventListener("click", () => {
+        const isDark = root.getAttribute("data-theme") === "dark";
+        const newTheme = isDark ? "light" : "dark";
+
+        root.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+        toggleBtn.textContent = newTheme === "dark" ? "☀️" : "🌙";
+    });
+})();
+
+/* ===== MESSAGE BOX ===== */
+function showMessage(text, type = "info") {
+    const box = document.getElementById("message-box");
+    box.textContent = text;
+    box.className = "show " + type;
+
+    setTimeout(() => {
+        box.className = box.className.replace("show", "").trim();
+    }, 3000);
+}
+</script>
 </body>
 </html>
