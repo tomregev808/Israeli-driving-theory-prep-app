@@ -85,7 +85,7 @@ def test_question():
     question_id = test["question_ids"][idx]
     question = shared.get_question_by_id(question_id)
 
-    print 
+    print (session["test"] )
 
     return render_template(
         "test_question.html",
@@ -98,7 +98,7 @@ def test_question():
 @bp.route("/test/answer", methods=["POST"])
 def test_answer():
     test = session["test"]
-    question_id = int(request.form["question_id"])
+    question_id = request.form["question_id"]
     selected = int(request.form["answer"])
 
     correct = shared.check_answer(question_id, selected)
