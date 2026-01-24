@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for
-from app import shared
-
-
+from flask import Blueprint, render_template, request, redirect, url_for, session
+from app import shared, api
+import random
+import json
 bp = Blueprint('frontend', __name__, url_prefix='/frontend')
 
 
@@ -47,3 +47,81 @@ def save_type():
         secure=True,
         samesite="Lax")  # 1 year)
     return resp
+
+@bp.route("/test/start")
+def start_test():
+    selected_type = request.cookies.get("type")
+    if not selected_type:
+        return "Error: No type selected", 400
+
+    questions = api.get_type_questions(selected_type)
+    questions_list = questions.get_json()  
+
+    if not questions_list or len(questions_list) < 30:
+        return "Error: Not enough questions for this type", 400
+
+    selected_questions = random.sample(questions_list, k=30)
+
+    session["test"] = {
+        "question_ids": [q["id"] for q in selected_questions],
+        "current_index": 0,
+        "correct_count": 0,
+        "answers": {}
+    }
+
+    return redirect(url_for("frontend.test_question"))
+
+@bp.route("/test/question")
+def test_question():
+    test = session.get("test")
+    if not test:
+        return redirect(url_for("frontend.start_test"))
+
+    idx = test["current_index"]
+
+    if idx >= 30:
+        return redirect(url_for("frontend.test_result"))
+
+    question_id = test["question_ids"][idx]
+    question = shared.get_question_by_id(question_id)
+
+    print 
+
+    return render_template(
+        "test_question.html",
+        question=question,
+        index=idx + 1,
+        total=30
+    )
+
+
+@bp.route("/test/answer", methods=["POST"])
+def test_answer():
+    test = session["test"]
+    question_id = int(request.form["question_id"])
+    selected = int(request.form["answer"])
+
+    correct = shared.check_answer(question_id, selected)
+
+    test["answers"][question_id] = selected
+    if correct:
+        test["correct_count"] += 1
+
+    test["current_index"] += 1
+    session.modified = True
+
+    return redirect(url_for("frontend.test_question"))
+
+@bp.route("/test/result")
+def test_result():
+    test = session.get("test")
+    if not test:
+        return redirect(url_for("start_test"))
+
+    passed = test["correct_count"] >= 26
+
+    return render_template(
+        "test_result.html",
+        score=test["correct_count"],
+        passed=passed
+    )

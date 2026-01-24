@@ -6,8 +6,13 @@
     <h2>שאלה {{ index }} מתוך {{ total }}</h2>
     <div id="questions"></div>
 </section>
+    <h3>{{ question.id }}: {{ question.title }}</h3>
 
-<form method="POST" action="{{ url_for('test_answer') }}">
+    {% if question.image %}
+        <img src="{{ question.image }}" alt="תמונה לשאלה">
+    {% endif %}
+
+<form method="POST" action="{{ url_for('frontend.test_answer') }}">
     {% for i in range(4) %}
         <label>
             <input type="radio" name="answer" value="{{ i }}" required>
