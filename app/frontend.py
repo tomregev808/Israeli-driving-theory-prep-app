@@ -52,7 +52,7 @@ def save_type():
 def start_test():
     selected_type = request.cookies.get("type")
     if not selected_type:
-        return "Error: No type selected", 400
+        return redirect(url_for('frontend.select_type'))
 
     questions = api.get_type_questions(selected_type)
     questions_list = questions.get_json()  

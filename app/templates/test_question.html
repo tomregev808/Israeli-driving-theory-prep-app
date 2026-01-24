@@ -2,10 +2,9 @@
 {% block title %}מבחן סימולציה{% endblock %}
 {% block content %}
 
-<section>
+<section class="question-box">
     <h2>שאלה {{ index }} מתוך {{ total }}</h2>
     <div id="questions"></div>
-</section>
     <h3>{{ question.id }}: {{ question.title }}</h3>
 
     {% if question.image %}
@@ -14,7 +13,7 @@
 
 <form method="POST" action="{{ url_for('frontend.test_answer') }}">
     {% for i in range(4) %}
-        <label>
+        <label class="answer">
             <input type="radio" name="answer" value="{{ i }}" required>
             {{ question['answer_' ~ i] }}
         </label>
@@ -22,5 +21,4 @@
     <input type="hidden" name="question_id" value="{{ question.id }}">
     <button type="submit">הבא</button>
 </form>
-
 {% endblock %}
