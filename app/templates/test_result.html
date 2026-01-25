@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}תוצאת המבחן{% endblock %}
+{% block content %}
+<section class="question-box">
+    
+    {% if passed %}
+    <h2>לחיים, עברת!</h2>
+    {% else %}
+    <h2>לא נורא, פעם הבאה</h2>
+    {% endif %}
+<table class="table table-bordered">
+		<thead>
+		  <tr>
+			<th>השאלה</th>
+			<th>התשובה הנכונה</th>
+			<th>התשובה שהזנת</th>
+		  </tr>
+		</thead>
+<tbody>
+        {% for answer in answers %}
+
+        {% if answer ['correct'] %}
+        <tr class = "correct">
+        {% else %}
+        <tr>
+        {% endif %}
+            <td>{{ answer ['id']  }}: {{ answer ['title']  }}
+                {% if answer ['image'] %}
+                <br>
+                <img src = "{{ answer ['image']  }}"></img>
+                {% endif %}
+            </td>
+
+         <td>{{  answer ['correct_answer_text'] }}</td>
+         <td>{{ answer ['user_answer_text'] }}</td>
+         </tr>
+        {% endfor %}
+
+
+    </tbody>
+</table>
+
+</section>
+{% endblock %}
+

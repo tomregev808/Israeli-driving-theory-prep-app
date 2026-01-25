@@ -217,3 +217,47 @@ footer {
 #message-box.success { background: #4caf50; }
 #message-box.error { background: #f44336; }
 #message-box.info { background: #2196f3; }
+
+
+/* === TABLE STYLES === */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+.table th, .table td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+}
+
+.table th {
+  background: var(--header-bg);
+  color: var(--header-text);
+  font-weight: 600;
+}
+
+.table tr {
+  transition: background 0.2s ease;
+}
+
+.table tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.table tr.correct {
+  background: #4caf50 !important;
+  color: white;
+}
+
+.table tr.correct td {
+  border-color: #4caf50;
+}
+
+.table img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 0.5rem;
+  border-radius: 4px;

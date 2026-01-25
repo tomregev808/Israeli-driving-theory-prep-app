@@ -46,10 +46,16 @@ def get_question_by_id(id):
         "answer_2": question["answer_2"],
         "answer_3": question["answer_3"],
         "correct_answer": question["correct_answer"],
+        "correct_answer_text":question [f"answer_{question["correct_answer"]}"],
         "category": question["category"],
         "image": image_url,
         "types": db_types
     }
+
+
+def get_answer_text (id, answer_number):
+    question = get_question_by_id (id)
+    return question [f"answer_{answer_number}"]
 
 
 def check_answer (id, user_answer):

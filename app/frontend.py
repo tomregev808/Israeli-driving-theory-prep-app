@@ -66,7 +66,7 @@ def start_test():
         "question_ids": [q["id"] for q in selected_questions],
         "current_index": 0,
         "correct_count": 0,
-        "answers": {}
+        "answers": []
     }
 
     return redirect(url_for("frontend.test_question"))
@@ -85,7 +85,6 @@ def test_question():
     question_id = test["question_ids"][idx]
     question = shared.get_question_by_id(question_id)
 
-    print (session["test"] )
 
     return render_template(
         "test_question.html",
@@ -101,14 +100,23 @@ def test_answer():
     question_id = request.form["question_id"]
     selected = int(request.form["answer"])
 
-    correct = shared.check_answer(question_id, selected)
+    question = shared.get_question_by_id (question_id)
 
-    test["answers"][question_id] = selected
+    correct = shared.check_answer(question_id, selected)
+    answer = {
+        "id":question_id,
+        "user_answer": selected,
+        "correct_answer": question ["correct_answer"],
+        "correct": correct,
+    }
+
+    test["answers"].append (answer)
     if correct:
         test["correct_count"] += 1
 
     test["current_index"] += 1
     session.modified = True
+    print (session["test"])
 
     return redirect(url_for("frontend.test_question"))
 
@@ -120,8 +128,23 @@ def test_result():
 
     passed = test["correct_count"] >= 26
 
+    answers = test["answers"]
+
+    for answer in answers:
+        question = shared.get_question_by_id (answer ['id'])
+
+
+        answer ["user_answer_text"] = shared.get_answer_text (answer ['id'], answer ['user_answer'])
+        answer ["correct_answer_text"] = shared.get_answer_text (answer ['id'], answer ['correct_answer'])
+        answer ["title"] = question ['title']
+        answer ["image"] = question ['image']
+
+
+    
+
     return render_template(
         "test_result.html",
         score=test["correct_count"],
-        passed=passed
+        passed=passed,
+        answers = answers
     )
