@@ -14,6 +14,8 @@
 			<th>השאלה</th>
 			<th>התשובה הנכונה</th>
 			<th>התשובה שהזנת</th>
+            <th>שמירת שאלות במאגר</th>
+
 		  </tr>
 		</thead>
 <tbody>
@@ -33,6 +35,7 @@
 
          <td>{{  answer ['correct_answer_text'] }}</td>
          <td>{{ answer ['user_answer_text'] }}</td>
+         <td> <button class="btn secondary" onclick="updateFailedQuestions({{ answer.id }}, false)">שמור שאלה למאגר</button></td>
          </tr>
         {% endfor %}
 
@@ -41,5 +44,30 @@
 </table>
 
 </section>
+<script>
+function updateFailedQuestions(questionId, isCorrect) {
+    let failed = JSON.parse(localStorage.getItem("failed_questions")) || [];
+
+    if (!isCorrect) {
+        if (!failed.includes(questionId)) {
+            failed.push(questionId);
+            showMessage("השאלה נשמרה למאגר לתרגול נוסף ✅", "success");
+        } else {
+            showMessage("השאלה כבר קיימת במאגר ❗", "info");
+        }
+    } else {
+        failed = failed.filter(id => id !== questionId);
+        showMessage("השאלה הוסרה ממאגר השאלות הכושלות ✖️", "error");
+    }
+
+    localStorage.setItem("failed_questions", JSON.stringify(failed));
+    fetch("/export_deck", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: failed })
+    });
+}
+</script>
+
 {% endblock %}
 
