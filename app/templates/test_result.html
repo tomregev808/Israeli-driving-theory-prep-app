@@ -5,8 +5,11 @@
     
     {% if passed %}
     <h2>לחיים, עברת!</h2>
+    <h3>טעית ב {{ 30 - score }} שאלות</h3>
     {% else %}
     <h2>לא נורא, פעם הבאה</h2>
+    <h3>טעית ב {{ 30 - score }} שאלות</h3>
+
     {% endif %}
     <h3> <a href = url_for('frontend.start_test')> מבחן חדש </a> </h3>
 <table class="table table-bordered">
